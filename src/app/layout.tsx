@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Josefin_Sans } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${josefinSans.variable}  h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Toaster position="top-center" />
         <Navbar />
         <div className="flex-1">{children}</div>
         <Footer />

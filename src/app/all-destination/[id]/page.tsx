@@ -8,18 +8,13 @@ import {
   CalendarDays,
   Check,
   MapPin,
-  Pencil,
   Star,
-  X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DestinationType } from "@/types";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-});
+import { EditDestination } from "@/components/EditDestination/EditDestination";
+import { DeleteDestinationDialog } from "@/components/shared/DeleteDestinationDialog";
 
 const highlights = [
   "Luxury beachfront accommodation",
@@ -63,22 +58,11 @@ const DestinationDetailsPage = async ({
         </Link>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-md border-neutral-300 text-neutral-800"
-          >
-            <Pencil className="size-3.5" />
-            Edit
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-md border-red-300 text-red-500 hover:bg-red-50 hover:text-red-600"
-          >
-            <X className="size-3.5" />
-            Cancel
-          </Button>
+
+
+          <EditDestination destination={destination} />
+
+          <DeleteDestinationDialog id={destination._id}></DeleteDestinationDialog>
         </div>
       </div>
 
@@ -104,7 +88,7 @@ const DestinationDetailsPage = async ({
           </div>
 
           <h1
-            className={`${cormorant.className} mt-2 text-4xl font-light tracking-tight text-neutral-900 sm:text-5xl`}
+            className={`mt-2 text-4xl font-light tracking-tight text-neutral-900 sm:text-5xl`}
           >
             {destination.name}
           </h1>

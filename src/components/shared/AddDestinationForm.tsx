@@ -1,6 +1,10 @@
 "use client";
 
-import { Package, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { Loader2, Package, Trash2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,22 +18,43 @@ import { Textarea } from "@/components/ui/textarea";
 const categories = ["Beach", "Mountain", "City", "Adventure", "Cultural"];
 
 const AddDestinationForm = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
 
-    const res = await fetch("http://localhost:8000/add-destination", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    try {
+      const res = await fetch("http://localhost:8000/add-destination", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          price: Number(data.price) || data.price,
+        }),
+      });
 
-    const result = await res.json()
-    console.log(result)
+      const result = await res.json();
 
-    form.reset();
+      if (res.ok && result.success) {
+        toast.success("Travel package added successfully!");
+        form.reset();
+        router.push("/all-destination");
+        router.refresh();
+      } else {
+        toast.error(result.message || "Failed to add destination.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Server connection failed. Make sure backend is running.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -126,6 +151,7 @@ const AddDestinationForm = () => {
           <Button
             type="reset"
             variant="outline"
+            disabled={loading}
             className="gap-2 border-red-300 text-red-500 hover:bg-red-50 hover:text-red-600"
           >
             <Trash2 className="size-4" />
@@ -133,10 +159,20 @@ const AddDestinationForm = () => {
           </Button>
           <Button
             type="submit"
-            className="gap-2 bg-cyan-600 text-white hover:bg-cyan-700"
+            disabled={loading}
+            className="gap-2 bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
           >
-            <Package className="size-4" />
-            Add Travel Package
+            {loading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Adding Package...
+              </>
+            ) : (
+              <>
+                <Package className="size-4" />
+                Add Travel Package
+              </>
+            )}
           </Button>
         </div>
       </form>
