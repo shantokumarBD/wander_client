@@ -9,11 +9,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DestinationType } from "@/types";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-});
+
 
 const filterTriggerClass =
   "h-10 w-full justify-between rounded-none border-0 bg-transparent px-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500 shadow-none hover:bg-neutral-50 focus-visible:border-0 focus-visible:ring-0 data-[size=default]:h-10!";
@@ -22,8 +21,18 @@ export const dynamic = "force-dynamic";
 
 const getAllDestinations = async (): Promise<DestinationType[]> => {
   try {
+
+    const jwtToken = await auth.api.getToken({
+      headers: await headers()
+    })
+
+    const token = jwtToken?.token
+    
     const res = await fetch("http://localhost:8000/all-destination", {
       cache: "no-store",
+      headers:{
+        authorization: `bearer ${token}`
+      }
     });
 
     if (!res.ok) {
@@ -46,7 +55,7 @@ const AllDestinationsPage = async () => {
       {/* Page header */}
       <div>
         <h1
-          className={`${cormorant.className} text-4xl font-light tracking-tight text-neutral-900 sm:text-5xl`}
+          className={` text-4xl font-light tracking-tight text-neutral-900 sm:text-5xl`}
         >
           Explore All Destinations
         </h1>
