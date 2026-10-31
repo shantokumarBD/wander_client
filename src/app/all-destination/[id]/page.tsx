@@ -1,0 +1,193 @@
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Cormorant_Garamond } from "next/font/google";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CalendarDays,
+  Check,
+  MapPin,
+  Pencil,
+  Star,
+  X,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { DestinationType } from "@/types";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400"],
+});
+
+const highlights = [
+  "Luxury beachfront accommodation",
+  "Traditional Balinese spa treatment",
+  "Sunrise trek to Mount Batur",
+  "Visit Uluwatu Temple at sunset",
+  "Private beach dinner experience",
+];
+
+const DestinationDetailsPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  const { id } = await params;
+
+  const res = await fetch(`http://localhost:8000/all-destination/${id}`, {
+    cache: "no-store",
+  });
+  const result = await res.json();
+
+  if (!result.success || !result.data) {
+    notFound();
+  }
+
+  const destination: DestinationType = result.data;
+  const image = destination.imageUrl?.includes("example.com")
+    ? "/destinations/bali.jpg"
+    : destination.imageUrl;
+
+  return (
+    <main className="mx-auto w-full max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
+      {/* Top bar */}
+      <div className="flex items-center justify-between gap-4">
+        <Link
+          href="/all-destination"
+          className="inline-flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-neutral-900"
+        >
+          <ArrowLeft className="size-4" />
+          Back to Destinations
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-md border-neutral-300 text-neutral-800"
+          >
+            <Pencil className="size-3.5" />
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-md border-red-300 text-red-500 hover:bg-red-50 hover:text-red-600"
+          >
+            <X className="size-3.5" />
+            Cancel
+          </Button>
+        </div>
+      </div>
+
+      {/* Hero image */}
+      <div className="relative mt-6 aspect-[21/9] w-full overflow-hidden bg-neutral-100">
+        <Image
+          src={image}
+          alt={destination.name}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_300px]">
+        {/* Left column */}
+        <div>
+          <div className="flex items-center gap-1.5 text-sm text-neutral-500">
+            <MapPin className="size-4" strokeWidth={1.8} />
+            {destination.country}
+          </div>
+
+          <h1
+            className={`${cormorant.className} mt-2 text-4xl font-light tracking-tight text-neutral-900 sm:text-5xl`}
+          >
+            {destination.name}
+          </h1>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+            <div className="flex items-center gap-1.5">
+              <Star className="size-4 fill-emerald-600 text-emerald-600" />
+              <span className="font-semibold text-emerald-600">
+                {destination.rating ?? "4.5"}
+              </span>
+              <span className="text-neutral-500">(234 reviews)</span>
+            </div>
+
+            <span className="text-neutral-300">|</span>
+
+            <div className="flex items-center gap-1.5 text-neutral-600">
+              <CalendarDays className="size-4" strokeWidth={1.8} />
+              {destination.duration}
+            </div>
+          </div>
+
+          <h2 className="mt-8 text-2xl font-medium text-neutral-900">
+            Overview
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+            {destination.description}
+          </p>
+
+          <h2 className="mt-8 text-2xl font-medium text-neutral-900">
+            Highlights
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+            {destination.description}
+          </p>
+
+          <ul className="mt-4 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
+            {highlights.map((highlight) => (
+              <li
+                key={highlight}
+                className="flex items-center gap-2 text-sm text-neutral-600"
+              >
+                <Check className="size-4 shrink-0 text-emerald-600" />
+                {highlight}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Booking card */}
+        <aside className="h-fit rounded-md border border-neutral-200 bg-white p-5">
+          <p className="text-xs text-neutral-500">Starting from</p>
+          <p className="mt-1 text-2xl font-semibold text-cyan-600">
+            ${destination.price}
+          </p>
+          <p className="text-xs text-neutral-500">per person</p>
+
+          <div className="mt-5 rounded-sm border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-700">
+            {new Date(destination.departureDate).toLocaleDateString("en-US")}
+          </div>
+
+          <Button className="mt-4 h-10 w-full rounded-sm bg-cyan-600 text-white hover:bg-cyan-700">
+            Book Now
+            <ArrowRight className="size-4" />
+          </Button>
+
+          <ul className="mt-5 space-y-2.5">
+            <li className="flex items-center gap-2 text-xs text-neutral-600">
+              <Check className="size-3.5 shrink-0 text-emerald-600" />
+              Free cancellation up to 7 days
+            </li>
+            <li className="flex items-center gap-2 text-xs text-neutral-600">
+              <Check className="size-3.5 shrink-0 text-emerald-600" />
+              Travel Insurance included
+            </li>
+            <li className="flex items-center gap-2 text-xs text-neutral-600">
+              <Check className="size-3.5 shrink-0 text-emerald-600" />
+              24/7 customer support
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </main>
+  );
+};
+
+export default DestinationDetailsPage;
