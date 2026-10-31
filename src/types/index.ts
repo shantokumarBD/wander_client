@@ -16,3 +16,18 @@ export type DestinationType = {
     description: string;
     rating?: string | number;
 };
+
+export type BookingType = {
+    _id: string;
+    username: string;
+    email: string;
+    destinationId: string;
+    destinationName: string;
+    country?: string;
+    category?: string;
+    price: string | number;
+    imageUrl?: string;
+    departureDate: string;
+    bookingDate?: string | Date;
+    status?: "Confirmed" | "Pending" | "Cancelled" | string;
+};

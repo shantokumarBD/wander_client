@@ -4,7 +4,7 @@ export const mainLinks: NavLink[] = [
   { label: "Home", href: "/", active: true },
   { label: "Destinations", href: "/all-destination" },
   { label: "Add Destination", href: "/add-destination" },
-  { label: "My Bookings", href: "/bookings" },
+  { label: "My Bookings", href: "/my-bookings" },
   { label: "Admin", href: "/admin" },
 ];
 
