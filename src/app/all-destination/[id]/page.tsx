@@ -19,6 +19,7 @@ import BookingCard from "@/components/shared/BookingCard";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { getTokenFormServer } from "@/lib/gettokenformServer";
+import { API_URL } from "@/lib/api";
 
 const highlights = [
   "Luxury beachfront accommodation",
@@ -37,7 +38,7 @@ const DestinationDetailsPage = async ({
 
   const token = await getTokenFormServer();
 
-  const res = await fetch(`http://localhost:8000/all-destination/${id}`, {
+  const res = await fetch(`${API_URL}/all-destination/${id}`, {
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",

@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { DestinationType } from "@/types";
 import { useSession } from "@/lib/auth-client";
 import { GetTokenFormClient } from "@/lib/gettokenformClient";
+import { API_URL } from "@/lib/api";
 
 const BookingCard = ({ destination }: { destination: DestinationType }) => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const BookingCard = ({ destination }: { destination: DestinationType }) => {
     try {
       const token = await GetTokenFormClient();
 
-      const res = await fetch("http://localhost:8000/booking", {
+      const res = await fetch(`${API_URL}/booking`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

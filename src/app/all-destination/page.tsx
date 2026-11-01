@@ -11,6 +11,7 @@ import {
 import { DestinationType } from "@/types";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { API_URL } from "@/lib/api";
 
 
 
@@ -28,7 +29,7 @@ const getAllDestinations = async (): Promise<DestinationType[]> => {
 
     const token = jwtToken?.token
     
-    const res = await fetch("http://localhost:8000/all-destination", {
+    const res = await fetch(`${API_URL}/all-destination`, {
       cache: "no-store",
       headers:{
         authorization: `bearer ${token}`

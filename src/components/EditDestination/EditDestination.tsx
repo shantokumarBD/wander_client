@@ -25,6 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { DestinationType } from "@/types";
 import { GetTokenFormClient } from "@/lib/gettokenformClient";
+import { API_URL } from "@/lib/api";
 
 export function EditDestination({
   destination,
@@ -52,7 +53,7 @@ export function EditDestination({
 
     try {
       const res = await fetch(
-        `http://localhost:8000/all-destination/${destination._id}`,
+        `${API_URL}/all-destination/${destination._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},

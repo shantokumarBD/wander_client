@@ -16,6 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth-client";
 import { GetTokenFormClient } from "@/lib/gettokenformClient";
+import { API_URL } from "@/lib/api";
 
 const categories = ["Beach", "Mountain", "City", "Adventure", "Cultural"];
 
@@ -36,7 +37,7 @@ const AddDestinationForm = () => {
     const token = await GetTokenFormClient()
 
     try {
-      const res = await fetch("http://localhost:8000/add-destination", {
+      const res = await fetch(`${API_URL}/add-destination`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

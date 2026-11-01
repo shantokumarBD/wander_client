@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 import { DestinationType } from "@/types";
+import { API_URL } from "@/lib/api";
 
 const fallbackByCategory: Record<string, string> = {
   Beach: "/destinations/maldives.jpg",
@@ -39,7 +40,7 @@ const getDestinationImage = (destination: DestinationType) => {
 
 const getFeaturedDestinations = async (): Promise<DestinationType[]> => {
   try {
-    const response = await fetch("http://localhost:8000/featured-destination", {
+    const response = await fetch(`${API_URL}/featured-destination`, {
       cache: "no-store",
     });
 

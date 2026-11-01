@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { GetTokenFormClient } from "@/lib/gettokenformClient";
+import { API_URL } from "@/lib/api";
 
 export function DeleteDestinationDialog({ id }: { id: string }) {
   const router = useRouter();
@@ -24,7 +25,7 @@ export function DeleteDestinationDialog({ id }: { id: string }) {
   const handleDelete = async () => {
     const token = await GetTokenFormClient();
     try {
-      const res = await fetch(`http://localhost:8000/all-destination/${id}`, {
+      const res = await fetch(`${API_URL}/all-destination/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},
       });
