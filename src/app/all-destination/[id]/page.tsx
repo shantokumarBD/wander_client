@@ -40,10 +40,6 @@ const DestinationDetailsPage = async ({
 
   const res = await fetch(`${API_URL}/all-destination/${id}`, {
     cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${token}`
-    }
   });
   const result = await res.json();
 

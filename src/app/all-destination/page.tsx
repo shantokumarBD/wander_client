@@ -22,18 +22,8 @@ export const dynamic = "force-dynamic";
 
 const getAllDestinations = async (): Promise<DestinationType[]> => {
   try {
-
-    const jwtToken = await auth.api.getToken({
-      headers: await headers()
-    })
-
-    const token = jwtToken?.token
-    
     const res = await fetch(`${API_URL}/all-destination`, {
       cache: "no-store",
-      headers:{
-        authorization: `bearer ${token}`
-      }
     });
 
     if (!res.ok) {
