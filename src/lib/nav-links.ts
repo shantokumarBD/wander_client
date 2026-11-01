@@ -5,7 +5,6 @@ export const mainLinks: NavLink[] = [
   { label: "Destinations", href: "/all-destination" },
   { label: "Add Destination", href: "/add-destination" },
   { label: "My Bookings", href: "/my-bookings" },
-  { label: "Admin", href: "/admin" },
 ];
 
 export const authLinks: NavLink[] = [
