@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 import { DestinationType } from "@/types";
+import { GetTokenFormClient } from "@/lib/gettokenformClient";
 
 export function EditDestination({
   destination,
@@ -47,12 +48,14 @@ export function EditDestination({
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
 
+    const token = await GetTokenFormClient()
+
     try {
       const res = await fetch(
         `http://localhost:8000/all-destination/${destination._id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},
           body: JSON.stringify({
             ...data,
             price: Number(data.price) || data.price,

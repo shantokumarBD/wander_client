@@ -14,6 +14,8 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
+import { authClient } from "@/lib/auth-client";
+import { GetTokenFormClient } from "@/lib/gettokenformClient";
 
 const categories = ["Beach", "Mountain", "City", "Adventure", "Cultural"];
 
@@ -23,19 +25,26 @@ const AddDestinationForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-
+    
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
+    const destinationData = Object.fromEntries(formData);
+
+    setLoading(true);
+
+
+    const token = await GetTokenFormClient()
 
     try {
       const res = await fetch("http://localhost:8000/add-destination", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({
-          ...data,
-          price: Number(data.price) || data.price,
+          ...destinationData,
+          price: Number(destinationData.price) || destinationData.price,
         }),
       });
 

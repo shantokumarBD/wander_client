@@ -1,12 +1,17 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { ArrowRight, Check, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
-import { ArrowRight, Check } from "lucide-react";
 import { DestinationType } from "@/types";
 import { useSession } from "@/lib/auth-client";
+import { GetTokenFormClient } from "@/lib/gettokenformClient";
 
 const BookingCard = ({ destination }: { destination: DestinationType }) => {
+  const router = useRouter();
   const { data: session } = useSession();
+  const [loading, setLoading] = useState(false);
 
   const user = session?.user;
 
@@ -14,17 +19,18 @@ const BookingCard = ({ destination }: { destination: DestinationType }) => {
     e.preventDefault();
 
     if (!user) {
-      alert("Please login first to book this destination!");
+      toast.error("Please login first to book this destination!");
+      router.push("/login");
       return;
     }
 
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
     const departureDate = formData.get("departureDate");
 
     const bookingData = {
       username: user.name,
       email: user.email,
-
       country: destination.country,
       category: destination.category,
       price: destination.price,
@@ -34,17 +40,36 @@ const BookingCard = ({ destination }: { destination: DestinationType }) => {
       bookingDate: new Date(),
     };
 
-    const res = await fetch("http://localhost:8000/booking", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bookingData),
-    });
+    setLoading(true);
 
-    const data = await res.json();
-    console.log(data);
+    try {
+      const token = await GetTokenFormClient();
+
+      const res = await fetch("http://localhost:8000/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const resData = await res.json();
+
+      if (res.ok && resData.success) {
+        toast.success("Destination booked successfully!");
+        router.push("/my-bookings");
+      } else {
+        toast.error(resData.message || "Failed to book destination.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Server error! Please check if backend is running.");
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <div>
       <aside className="h-fit rounded-md border border-neutral-200 bg-white p-5">
@@ -63,10 +88,20 @@ const BookingCard = ({ destination }: { destination: DestinationType }) => {
 
           <Button
             type="submit"
+            disabled={loading}
             className="mt-4 h-10 w-full rounded-sm bg-cyan-600 text-white hover:bg-cyan-700"
           >
-            Book Now
-            <ArrowRight className="size-4" />
+            {loading ? (
+              <>
+                <Loader2 className="size-4 animate-spin mr-2" />
+                Booking...
+              </>
+            ) : (
+              <>
+                Book Now
+                <ArrowRight className="size-4 ml-1" />
+              </>
+            )}
           </Button>
         </form>
 

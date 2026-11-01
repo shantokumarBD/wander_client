@@ -16,6 +16,9 @@ import { DestinationType } from "@/types";
 import { EditDestination } from "@/components/EditDestination/EditDestination";
 import { DeleteDestinationDialog } from "@/components/shared/DeleteDestinationDialog";
 import BookingCard from "@/components/shared/BookingCard";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { getTokenFormServer } from "@/lib/gettokenformServer";
 
 const highlights = [
   "Luxury beachfront accommodation",
@@ -32,8 +35,14 @@ const DestinationDetailsPage = async ({
 }) => {
   const { id } = await params;
 
+  const token = await getTokenFormServer();
+
   const res = await fetch(`http://localhost:8000/all-destination/${id}`, {
     cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`
+    }
   });
   const result = await res.json();
 
@@ -59,11 +68,11 @@ const DestinationDetailsPage = async ({
         </Link>
 
         <div className="flex items-center gap-2">
-
-
           <EditDestination destination={destination} />
 
-          <DeleteDestinationDialog id={destination._id}></DeleteDestinationDialog>
+          <DeleteDestinationDialog
+            id={destination._id}
+          ></DeleteDestinationDialog>
         </div>
       </div>
 
@@ -139,7 +148,7 @@ const DestinationDetailsPage = async ({
         </div>
 
         {/* Booking card */}
-            <BookingCard destination={destination}></BookingCard>
+        <BookingCard destination={destination}></BookingCard>
       </div>
     </main>
   );

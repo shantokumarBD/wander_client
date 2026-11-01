@@ -6,6 +6,7 @@ import Link from "next/link";
 import { BookingType } from "@/types";
 import MyBookingCard from "@/components/shared/MyBookingCard";
 import { Button } from "@/components/ui/button";
+import { getTokenFormServer } from "@/lib/gettokenformServer";
 
 const MyBookingPage = async () => {
   const session = await auth.api.getSession({
@@ -18,8 +19,11 @@ const MyBookingPage = async () => {
     redirect("/login");
   }
 
+  const token = getTokenFormServer()
+
   const res = await fetch(`http://localhost:8000/my-bookings/${user.email}`, {
     cache: "no-store",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},
   });
 
   const data = await res.json();

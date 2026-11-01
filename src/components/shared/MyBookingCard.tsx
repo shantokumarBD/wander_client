@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 
 import { BookingType } from "@/types";
 import { Button } from "@/components/ui/button";
+import { GetTokenFormClient } from "@/lib/gettokenformClient";
 
 export const MyBookingCard = ({ booking }: { booking: BookingType }) => {
   const router = useRouter();
@@ -19,10 +20,13 @@ export const MyBookingCard = ({ booking }: { booking: BookingType }) => {
       return;
     }
 
+    const token = GetTokenFormClient()
+
     try {
       setLoading(true);
       const res = await fetch(`http://localhost:8000/my-bookings/${id}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},
       });
       const data = await res.json();
 

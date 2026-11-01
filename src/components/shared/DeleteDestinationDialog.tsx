@@ -16,14 +16,17 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { GetTokenFormClient } from "@/lib/gettokenformClient";
 
 export function DeleteDestinationDialog({ id }: { id: string }) {
   const router = useRouter();
 
   const handleDelete = async () => {
+    const token = await GetTokenFormClient();
     try {
       const res = await fetch(`http://localhost:8000/all-destination/${id}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},
       });
       const data = await res.json();
 
